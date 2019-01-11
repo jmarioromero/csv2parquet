@@ -35,6 +35,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -d, --delimiter       The CSV custom delimiter.
   -n ROWS, --rows ROWS  The number of rows to include, useful for testing.
   -r ROW_GROUP_SIZE, --row-group-size ROW_GROUP_SIZE
                         The number of rows per row group.
