@@ -30,9 +30,9 @@ def sanitize_column_name(name):
     cleaned = re.sub('_*$', '', cleaned)
     return cleaned
 
-def get_column_names(csv_file, rename):
+def get_column_names(csv_file, rename, delimiter):
     with open(csv_file) as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=get_delimiter(csv_file))
+        spamreader = csv.reader(csvfile, delimiter=get_delimiter(csv_file, delimiter))
         column_names = []
         for row in spamreader:
             for idx, col in enumerate(row):
@@ -60,7 +60,7 @@ def get_pyarrow_types():
 # pylint: disable=too-many-branches,too-many-statements
 def convert(csv_file, output_file, delimiter, row_group_size, codec, max_rows,
             rename, include, exclude, raw_types):
-    column_names = get_column_names(csv_file, rename)
+    column_names = get_column_names(csv_file, rename, delimiter)
     columns = [[] for x in column_names]
     arrs = [[] for x in column_names]
     dropped_values = [0 for x in column_names]
@@ -252,4 +252,5 @@ def main_with_args(func, argv):
          args.type)
 
 def main():
+    print('Romero')
     main_with_args(convert, sys.argv[1:])
