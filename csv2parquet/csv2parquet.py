@@ -173,7 +173,7 @@ def convert(csv_file, output_file, delimiter, row_group_size, codec, max_rows,
 def main_with_args(func, argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('csv_file', help="input file, can be CSV or TSV")
-    parser.add_argument('-d', '--delimiter', help='The csv file delimiter', nargs=1)
+    parser.add_argument('-d', '--delimiter', help='The csv file delimiter')
     parser.add_argument('-n', '--rows', type=int,
                         help='The number of rows to include, useful for testing.', nargs=1)
     parser.add_argument('-r', '--row-group-size', default=[10000], type=int,
@@ -251,6 +251,5 @@ def main_with_args(func, argv):
          args.exclude,
          args.type)
 
-def main():
-    print('Romero')
+if __name__ == "__main__":
     main_with_args(convert, sys.argv[1:])
