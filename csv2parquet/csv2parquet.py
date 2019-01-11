@@ -18,10 +18,10 @@ PA_STRING = pa.string()
 PA_TIMESTAMP = pa.timestamp('ns')
 PA_BINARY = pa.binary()
 
-def get_delimiter(csv_file):
+def get_delimiter(csv_file, custom_delimiter=','):
     if csv_file[-4:] == '.tsv':
         return '\t'
-    return ','
+    return custom_delimiter if custom_delimiter else ','
 
 def sanitize_column_name(name):
     cleaned = re.sub('[^a-z0-9]', '_', name.lower())
@@ -58,7 +58,7 @@ def get_pyarrow_types():
     }
 
 # pylint: disable=too-many-branches,too-many-statements
-def convert(csv_file, output_file, row_group_size, codec, max_rows,
+def convert(csv_file, output_file, delimiter, row_group_size, codec, max_rows,
             rename, include, exclude, raw_types):
     column_names = get_column_names(csv_file, rename)
     columns = [[] for x in column_names]
@@ -90,7 +90,7 @@ def convert(csv_file, output_file, row_group_size, codec, max_rows,
             arrs[colnum].append(arr)
 
     with open(csv_file) as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=get_delimiter(csv_file))
+        spamreader = csv.reader(csvfile, delimiter=get_delimiter(csv_file, delimiter))
         rownum = -1
         for row in spamreader:
             rownum = rownum + 1
@@ -173,6 +173,7 @@ def convert(csv_file, output_file, row_group_size, codec, max_rows,
 def main_with_args(func, argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('csv_file', help="input file, can be CSV or TSV")
+    parser.add_argument('-d', '--delimiter', help='The csv file delimiter', nargs=1)
     parser.add_argument('-n', '--rows', type=int,
                         help='The number of rows to include, useful for testing.', nargs=1)
     parser.add_argument('-r', '--row-group-size', default=[10000], type=int,
@@ -241,6 +242,7 @@ def main_with_args(func, argv):
     args.codec = args.codec[0]
     func(args.csv_file,
          output,
+         args.delimiter,
          args.row_group_size,
          args.codec,
          args.rows,
